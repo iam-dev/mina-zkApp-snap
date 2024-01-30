@@ -155,7 +155,7 @@ const Index = () => {
 
   const handleCreateNullifierClick = async () => {
     try {
-      const result = await createNullifier('1');
+      const result = await createNullifier('Hello World!');
       if (result) {
         const convertNullifier = (result as { nullifier: { x: string, y: string, s: string } }).nullifier;
         console.log(convertNullifier);

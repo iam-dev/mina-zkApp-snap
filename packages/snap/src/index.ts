@@ -27,11 +27,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       const publicKey = keypair.publicKey;
       return { publicKey };
     case 'mina_createNullifier':
-    
       const keyPair = await getKeyPair();
       console.log('mina_createNullifier', keyPair.privateKey);
       const client = new Client({ network: 'mainnet' });
-      const requestMessage = request.params.message;
+    
+      const requestMessage = (request.params as { message: string }).message;
       console.log('request.params.message', requestMessage);
       const message = Array.from(new BigInt64Array([BigInt(requestMessage)]));
 
@@ -82,7 +82,7 @@ async function getKeyPair(): Promise<{publicKey: string, privateKey: string}> {
   ]);
   if (!accountKey0.privateKeyBytes) {
     // TODO: we should return error here
-    return {};
+    return { publicKey: '', privateKey: '' };
   }
   accountKey0.privateKeyBytes[0] &= 0x3f;
   const reversed = Buffer.alloc(accountKey0.privateKeyBytes?.length);
