@@ -60,7 +60,7 @@ export const getSnap = async (version?: string): Promise<Snap | undefined> => {
 export const sendHello = async () => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
-    params: { snapId: defaultSnapOrigin, request: { method: 'hello' } },
+    params: { snapId: defaultSnapOrigin, request: { method: 'mina_hello' } },
   });
 };
 
@@ -71,11 +71,18 @@ export const showPublicKey = async () => {
   });
 }
 
-export const createNullifier = async () => {
+export const createNullifier = async (message?: string) => {
   return await window.ethereum.request({
     method: 'wallet_invokeSnap',
-    params: { snapId: defaultSnapOrigin, request: { method: 'mina_createNullifier' } },
+    params: { snapId: defaultSnapOrigin, request: { method: 'mina_createNullifier', params: { message } } },
   });
 }
+
+export const callZkapp = async (zkappAddress: string, zkappMethod: string) => {
+  return await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: { snapId: defaultSnapOrigin, request: { method: 'mina_zkapp', params: { zkappAddress, zkappMethod} } },
+  });
+};
 
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');

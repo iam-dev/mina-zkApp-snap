@@ -20,6 +20,7 @@ import {
   shouldDisplayReconnectButton,
   showPublicKey,
   createNullifier,
+  callZkapp,
 } from '../utils';
 
 const Container = styled.div`
@@ -154,12 +155,21 @@ const Index = () => {
 
   const handleCreateNullifierClick = async () => {
     try {
-      const result = await createNullifier();
+      const result = await createNullifier('1');
       if (result) {
         const convertNullifier = (result as { nullifier: { x: string, y: string, s: string } }).nullifier;
         console.log(convertNullifier);
         setNullifier(convertNullifier);
       }
+    } catch (error) {
+      console.error(error);
+      dispatch({ type: MetamaskActions.SetError, payload: error });
+    }
+  };
+
+  const handleCallZkAppHelloWorldClick = async () => {
+    try {
+      await callZkapp('B62qnHQ3tW9mxUWMnQ4HLp5WEeCx2hjPSYSsRPJj313qY1uw3JsyTzg','update');
     } catch (error) {
       console.error(error);
       dispatch({ type: MetamaskActions.SetError, payload: error });
@@ -250,6 +260,25 @@ const Index = () => {
             button: (
               <ShowGenerateNullifierButton
                 onClick={handleCreateNullifierClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            isMetaMaskReady &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'Call zkApp Hello World',
+            description:
+              'Call zkApp Hello World.',
+            button: (
+              <SendHelloButton
+                onClick={handleCallZkAppHelloWorldClick}
                 disabled={!state.installedSnap}
               />
             ),

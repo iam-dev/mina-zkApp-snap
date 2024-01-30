@@ -31,7 +31,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       const keyPair = await getKeyPair();
       console.log('mina_createNullifier', keyPair.privateKey);
       const client = new Client({ network: 'mainnet' });
-      const message = Array.from(new BigInt64Array([BigInt(1)]));
+      const requestMessage = request.params.message;
+      console.log('request.params.message', requestMessage);
+      const message = Array.from(new BigInt64Array([BigInt(requestMessage)]));
 
       let jsonNullifier1 = client.createNullifier(
         message,
@@ -40,7 +42,11 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       const publicNullifier = jsonNullifier1.public;
       console.log('publicNullifier', publicNullifier);
       return publicNullifier; 
-    case 'hello':
+    case 'mina_zkapp':
+        const { zkappAddress, zkappMethod } = request.params;
+        console.log('mina_zkapp', zkappAddress, zkappMethod);
+        break;
+    case 'mina_hello':
       return snap.request({
         method: 'snap_dialog',
         params: {
